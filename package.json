@@ -1,6 +1,6 @@
 {
   "name": "@s2j/acknowledgements",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "Generate Acknowledgements for third-party software, libraries, and tools used in your projects.",
   "type": "module",
   "license": "GPL-3.0-or-later",
@@ -21,6 +21,8 @@
   ],
   "scripts": {
     "lint:docs": "s2j-docs-linter ./README.md ./CHANGELOG.md ./docs/*.md ./docs/**/*.md ./docs_mod/*.md ./docs_mod/**/*.md  ./examples/**/*.md",
+    "docs:heading-tags": "python3 scripts/apply-heading-tags.py",
+
     "lint": "eslint . && npm run typecheck",
     "lint:fix": "eslint . --fix",
     "clean": "rm -rf dist",

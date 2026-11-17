@@ -5,7 +5,7 @@ Syft / Feluda / onot を直列に実行するオーケストレーション仕�
 
 **Syft フラグ・マージ・成果物コピーの正本は本ファイル**です ([specs.md](./specs.md) の正本マトリックス)。
 
-## 全体フロー
+## 全体フロー `{@pipeline:s-h001}`
 
 ```text
 ターゲット解決 → Syft (SPDX JSON) → [Feluda] → onot (Notice) → 出力コピー
@@ -19,9 +19,9 @@ Syft / Feluda / onot を直列に実行するオーケストレーション仕�
 | 3 | onot | Acknowledgements / Notice 文書生成 | 必須 |
 | 4 | (本 CLI) | onot 出力 `.md` を `output` にコピー、一時ファイル整理 | 必須 |
 
-## Syft
+## Syft `{@pipeline:s-syft}`
 
-### 入力
+### 入力 `{@pipeline:s-h003}`
 
 プリセットと設定に応じ、下記のいずれか (またはマージ) を渡します。
 
@@ -31,7 +31,7 @@ Syft / Feluda / onot を直列に実行するオーケストレーション仕�
 | ファイルシステム上の `.app` | `syft scan dir:/path/Foo.app` |
 | 明示パス | 設定の `scanPaths[]` (`.` と `./` は同義 — ホストルート相対に正規化) |
 
-### `scan.exclude` (v1)
+### `scan.exclude` (v1) `{@pipeline:s-scan-exclude-v1}`
 
 `ack.config.json` の `scan.exclude[]` は、各 Syft 呼び出しに次の形で渡します (1エントリ、1フラグ)。
 
@@ -41,7 +41,7 @@ syft scan dir:{path} -o spdx-json={out} --exclude {pattern} ...
 
 `syft.extraArgs` は **追加** で後置します。マッピング実装は [decisions/003-spdx-merge-and-syft.md](./decisions/003-spdx-merge-and-syft.md) に固定します。
 
-### SPDX マージ (v1)
+### SPDX マージ (v1) `{@pipeline:s-spdx-v1}`
 
 [decisions/003-spdx-merge-and-syft.md](./decisions/003-spdx-merge-and-syft.md) を採用します。
 
@@ -65,37 +65,37 @@ syft scan dir:{path} -o spdx-json={out} --exclude {pattern} ...
 
 `composer.lock` のみを Syft 入力にする運用は **v1非対象** (将来 v1.1)。v1では `vendor/` ディレクトリスキャンを使います。
 
-### 出力
+### 出力 `{@pipeline:s-h006}`
 
 * ファイル: `{workDir}/sbom.spdx.json` (ファイル名は設定で変更可)
 * 形式: **SPDX JSON** (`-o spdx-json=...`)
 
-### macOS アプリ向け注意 (Cozy Brew)
+### macOS アプリ向け注意 (Cozy Brew) `{@pipeline:s-macos-cozy-brew}`
 
 `.app` 単体の Syft スキャンだけではパッケージ数が不足し得ます。
 `macos-app` では `xcode.merge` により `.app` と SPM checkouts を **2対象スキャン → マージ** します ([presets.md](./presets.md))。
 
 SPDX ドキュメント ID 等の細部は実装時に SPDX JSON 構造に合わせて調整しますが、**マージ条件と一意化キーは上記を変更しません**。
 
-## Feluda (任意)
+## Feluda (任意) `{@pipeline:s-feluda}`
 
-### 目的
+### 目的 `{@pipeline:s-h009}`
 
 * SPDX に欠けているライセンス ID の補完 (**前処理後の** `sbom.spdx.json` に対して in-place オーバーライト)
 * 監査モードでの警告 (CI ゲート用途)
 
-### v1デフォルト
+### v1デフォルト `{@pipeline:s-v1}`
 
 * 真のデフォルト値は **`presets/<name>/defaults.json` マージ後** (正本: [presets.md](./presets.md) / `presets/`)
 * 現状: `macos-app` / `wordpress` は `true`、`dir` は `false`
 * **macOS 実ホスト** (Cozy Brew 等): `init --preset macos-app` で Feluda 有効がデフォルト。[install.md](./install.md) で `feluda` を PATH に用意 → `doctor` で確認
 * 有効時のみ子プロセスを起動。失敗時は非ゼロ exit で終了 (設定で `feluda.strict` を将来追加可)
 
-### インストール
+### インストール `{@pipeline:s-h011}`
 
 brew 一択ではないため、[install.md](./install.md) のとおり `doctor` で検出のみ行います。
 
-### コマンド形 (v1)
+### コマンド形 (v1) `{@pipeline:s-v1-2}`
 
 マージ済み SPDX を **その場でオーバーライト** します ([Feluda SBOM ingest](https://feluda.readthedocs.io/en/stable/sbom/ingest/))。
 
@@ -105,15 +105,15 @@ feluda --sbom-input {workDir}/sbom.spdx.json --sbom-enriched {workDir}/sbom.spdx
 
 `ack.config.json` の `pipeline.feludaArgs` で置き換え可。`{sbom}` は上記 JSON パスに展開されます。
 
-## onot
+## onot `{@pipeline:s-onot}`
 
-### 入力
+### 入力 `{@pipeline:s-h014}`
 
 * Syft (および Feluda 後) の SPDX JSON
 * `--config` で指定する **onot YAML** (`pipeline.onotConfig`、通常 `onot.yaml`)
 * ファイルが **ない** 場合: v1は **WARN を出し、`--config` なしで onot を試行** (失敗時は exit コードを子プロセスに従う)
 
-### 出力
+### 出力 `{@pipeline:s-h015}`
 
 onot v1.2.x の `generate -o` は **ディレクトリ** です。配下に `OSS_Notice_*.md` が1件できます。CLI は最新の `.md` を `{output}` にコピーします。
 
@@ -121,17 +121,17 @@ onot v1.2.x の `generate -o` は **ディレクトリ** です。配下に `OSS
 {workDir}/onot-notice/OSS_Notice_….md  →  {output}  (例: ACKNOWLEDGEMENTS.md)
 ```
 
-### コマンド形 (v1)
+### コマンド形 (v1) `{@pipeline:s-v1-3}`
 
 ```text
 onot generate -i {workDir}/sbom.spdx.json -f md --config {onotConfigPath} -o {workDir}/onot-notice
 ```
 
-### Python 環境
+### Python 環境 `{@pipeline:s-python}`
 
 onot は PyPI 製です。実行ファイルは **`{host}/venv/bin/onot` を優先** (なければ PATH)。構築は [install.md](./install.md) の `init` 手順が正本です。
 
-## 作業ディレクトリ
+## 作業ディレクトリ `{@pipeline:s-h018}`
 
 CLI は生成前に `workDir` を作成し、終了時に `--keep-intermediate` がない限り、中間ファイル削除を試みます (削除失敗は警告のみ)。
 
@@ -140,7 +140,7 @@ CLI は生成前に `workDir` を作成し、終了時に `--keep-intermediate` 
 | `build/oss-notice/` (設定 `workDir`) | 中間 SBOM、onot 出力 | **ignore 推奨** |
 | ホスト指定 `output` | 最終 `ACKNOWLEDGEMENTS.md` (onot `.md` のコピー先) | ホスト方針 (多くは commit) |
 
-## エラー処理
+## エラー処理 `{@pipeline:s-h019}`
 
 | 状況 | 挙動 |
 | --- | --- |
@@ -149,7 +149,7 @@ CLI は生成前に `workDir` を作成し、終了時に `--keep-intermediate` 
 | 出力先が既存ファイル | デフォルトは **オーバーライト** (生成物の性質上)。`--dry-run` 時は書かない |
 | ターゲット未解決 (`.app` 等) | 人間可読な解決手順を stderr に出し、exit `2` |
 
-## 将来: onot サブセット実装
+## 将来: onot サブセット実装 `{@pipeline:s-onot-2}`
 
 ネック対策として、中期では **SPDX JSON → Markdown** の最小 TS 実装を別モジュール化する余地があります。
 v1仕様では **onot 必須** とし、フラグ `pipeline.engine: "onot" | "builtin"` は将来拡張用に予約のみ記載しません (YAGNI)。

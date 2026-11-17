@@ -3,7 +3,7 @@
 `s2j-acknowledgements` のサブコマンドと振る舞い契約です。
 [S2J Docs Linter の CLI 仕様](https://github.com/stein2nd/docs-linter/blob/main/docs/specifications/cli_tooling_spec.md) に倣い、**再現可能な CLUI** を目指します。
 
-## 起動形
+## 起動形 `{@cli:s-h001}`
 
 ```zsh
 npx s2j-acknowledgements <command> [options]
@@ -16,7 +16,7 @@ s2j-acknowledgements doctor
 s2j-acknowledgements generate --config ack.config.json
 ```
 
-## サブコマンド (v1)
+## サブコマンド (v1) `{@cli:s-v1}`
 
 `init` は [S2J Docs Linter](https://github.com/stein2nd/docs-linter) と同型のオンボーディングです。**標準レイアウトはホストルートの `./venv/`** です。
 
@@ -27,7 +27,7 @@ s2j-acknowledgements generate --config ack.config.json
 | `init` | 設定ひな型、`./venv/` + onot、`.gitignore` 案内 | **必須 (v1)** |
 | `help` / `--help` | 使用法 | 必須 |
 
-## ホストルートと設定パス
+## ホストルートと設定パス `{@cli:s-h003}`
 
 | 概念 | ルール |
 | --- | --- |
@@ -37,13 +37,13 @@ s2j-acknowledgements generate --config ack.config.json
 
 `xcode-target-resolution.md` の「`package.json` / `ack.config.json` があるディレクトリ」は、**生成時は `--cwd` と `ack.config.json` の所在** を正とします (`package.json` 単体のリポジトリは `wordpress` 等でも可)。
 
-## `init`
+## `init` `{@cli:s-init}`
 
-### 目的
+### 目的 `{@cli:s-h005}`
 
 ホストプロジェクトに、Acknowledgements 生成に必要な **設定ファイル** と **プロジェクトローカルな onot 実行環境** を用意します。`npm install` だけでは venv は作りません。詳細は [decisions/001-venv-and-init.md](./decisions/001-venv-and-init.md)。
 
-### 必須・任意フラグ
+### 必須・任意フラグ `{@cli:s-h006}`
 
 | 引数 | 必須 | 説明 |
 | --- | --- | --- |
@@ -54,7 +54,7 @@ s2j-acknowledgements generate --config ack.config.json
 
 `init` は `package.json` を変更しません。scripts 追加は [usage.md](./usage.md) を参照してください。
 
-### 作成・更新する成果物
+### 作成・更新する成果物 `{@cli:s-h007}`
 
 `init` が書き込む `ack.config.json` には、プリセットデフォルトどおり **`tools.venvPath`: `"venv"`** を含めます。
 
@@ -65,7 +65,7 @@ s2j-acknowledgements generate --config ack.config.json
 | `./venv/` | 未存在時: `python3 -m venv` → `pip install` で onot + openpyxl をピン留め ([install.md](./install.md))。既存時は **破壊しない** |
 | 壊れた venv | `bin/onot` が無効なら **WARN**、`init` は再作成しない。`generate` は exit `1`。修復は将来の `--repair-venv` |
 
-### 冪等性 (`init` 再実行)
+### 冪等性 (`init` 再実行) `{@cli:s-init-2}`
 
 CI や手元で **何度でも安全に再実行** できることを v1の前提とします。
 
@@ -77,7 +77,7 @@ CI や手元で **何度でも安全に再実行** できることを v1の前�
 | `--preset` 未知 | — | — | `2` |
 | Python v3.11+ 不在 | — | 作成失敗 | `2` / `1` |
 
-### `.gitignore` 案内と `doctor` 判定
+### `.gitignore` 案内と `doctor` 判定 `{@cli:s-gitignore-doctor}`
 
 [decisions/001-venv-and-init.md](./decisions/001-venv-and-init.md) に合わせ、**行単位の部分一致** (正規表現は使わない) で判定します。
 
@@ -96,7 +96,7 @@ CI や手元で **何度でも安全に再実行** できることを v1の前�
 | `.gitignore` があるが上記 OK 行がない | WARN、追記候補を表示 (自動追記しない) |
 | 両方 OK | 何もしない |
 
-### 終了コード (`init`)
+### 終了コード (`init`) `{@cli:s-init-3}`
 
 | Code | 意味 |
 | --- | --- |
@@ -104,9 +104,9 @@ CI や手元で **何度でも安全に再実行** できることを v1の前�
 | `1` | venv 作成または `pip install` 失敗 |
 | `2` | `--preset` 省略・未知、Python v3.11+ 不在 |
 
-## `doctor`
+## `doctor` `{@cli:s-doctor}`
 
-### モード
+### モード `{@cli:s-h012}`
 
 `--cwd` はホストルートです。フルモードでも config 内パスはホストルート相対です。
 
@@ -115,7 +115,7 @@ CI や手元で **何度でも安全に再実行** できることを v1の前�
 | **基本** | `--config` も `ACK_CONFIG` もない、または設定ファイルが存在しない | Node、Python、`syft`、onot 解決、`venv`、`.gitignore` (上記判定)。**Feluda はスキップ** |
 | **フル** | `--config <path>` または `ACK_CONFIG`、かつファイルが読める | 基本に加え、マージ後設定の `pipeline.feluda` に従い Feluda を必須化 |
 
-### 確認項目 (共通)
+### 確認項目 (共通) `{@cli:s-h013}`
 
 | 区分 | チェック |
 | --- | --- |
@@ -126,7 +126,7 @@ CI や手元で **何度でも安全に再実行** できることを v1の前�
 | Ack `venv/` | 存在、`bin/onot` 実行可否、推奨 onot バージョン (WARN) |
 | `.gitignore` | [上記表](#gitignore-案内と-doctor-判定) (WARN のみ) |
 
-### 確認項目 (フルモードのみ)
+### 確認項目 (フルモードのみ) `{@cli:s-h014}`
 
 非 macOS では `xcode` 関連チェックは **スキップ** (`wordpress` / `dir` 向け)。
 
@@ -136,16 +136,16 @@ CI や手元で **何度でも安全に再実行** できることを v1の前�
 | `onot.yaml` | `pipeline.onotConfig` が指すファイルの存在 (なければ WARN。生成は v1でも試行する — [pipeline.md](./pipeline.md)) |
 | OSS Notice title | `pipeline.noticeProductName` または `xcode.productName` から解決。未設定で `host-sbom` のとき WARN ([config-schema.md](./config-schema.md)) |
 
-### 出力
+### 出力 `{@cli:s-h015}`
 
 推奨インストール手順は [install.md](./install.md) への参照を stderr または stdout 末尾に1行載せます。
 
 * 成功時: stdout に表形式または箇条書きで OK / WARN / MISSING
 * 終了コード: 必須ツール欠落時は `1`、警告のみは `0`
 
-## `generate`
+## `generate` `{@cli:s-generate}`
 
-### 設定パスの解決
+### 設定パスの解決 `{@cli:s-h017}`
 
 `doctor` と同様、`--config` を省略したときは次の順で設定ファイルを決めます。
 
@@ -157,7 +157,7 @@ CI や手元で **何度でも安全に再実行** できることを v1の前�
 
 ファイルが存在しない場合は exit `2` とし、stderr に `error: config not found: <絶対パス>` を出します。
 
-### 任意引数 (CLI が設定をオーバーライト)
+### 任意引数 (CLI が設定をオーバーライト) `{@cli:s-cli}`
 
 | 引数 | 説明 |
 | --- | --- |
@@ -171,7 +171,7 @@ CI や手元で **何度でも安全に再実行** できることを v1の前�
 | `--skip-feluda` | 設定にかかわらず Feluda をスキップ |
 | `--verbose` | 子プロセスコマンド行を表示 |
 
-### 処理順序
+### 処理順序 `{@cli:s-h019}`
 
 1. 設定ファイル読み込みとスキーマ検証 (失敗時 exit `2`)
 2. プリセット適用 (デフォルト値マージ)
@@ -179,12 +179,12 @@ CI や手元で **何度でも安全に再実行** できることを v1の前�
 4. [pipeline.md](./pipeline.md) に従い子プロセス実行 (`onot` は venv 優先で解決)
 5. onot が `{workDir}/onot-notice/` に書いた `.md` を `output` / `--out` にコピー ([pipeline.md](./pipeline.md))
 
-### ファイルオーバーライト
+### ファイルオーバーライト `{@cli:s-h020}`
 
 `generate` は **最終 Acknowledgements のみ** をオーバーライトします。
 `ack.config.json` やホストの `package.json` は変更しません ([S2J Docs Linter](https://github.com/stein2nd/docs-linter) の安全方針と同型)。
 
-## Exit code
+## Exit code `{@cli:s-exit-code}`
 
 | Code | 意味 |
 | --- | --- |
@@ -193,7 +193,7 @@ CI や手元で **何度でも安全に再実行** できることを v1の前�
 | `2` | ユーザー入力・設定・ターゲット解決エラー |
 | `127` | 実行ファイル未検出 (内部判定) |
 
-### スモークテスト (ACK-001〜006)
+### スモークテスト (ACK-001〜006) `{@cli:s-ack-001}`
 
 CI の `npm run test:doctor` (`scripts/test-doctor.sh`) が再現する最小契約です。
 
@@ -206,7 +206,7 @@ CI の `npm run test:doctor` (`scripts/test-doctor.sh`) が再現する最小契
 | ACK-005 | `generate` + 不正設定 (`--cwd` サンドボックス) | `2` | `validation failed` |
 | ACK-006 | `generate --dry-run` (有効な `ack.config.json`) | `0` | `dry-run` |
 
-## ログ
+## ログ `{@cli:s-h023}`
 
 子プロセスの生ログは `--verbose` 時のみ stdout/stderr に転送します。
 
@@ -215,7 +215,7 @@ CI の `npm run test:doctor` (`scripts/test-doctor.sh`) が再現する最小契
 | stdout | 人間向け進捗、成功時の出力パス |
 | stderr | 警告、子プロセスの要約エラー |
 
-## アーキテクチャー (実装指針)
+## アーキテクチャー (実装指針) `{@cli:s-h024}`
 
 [S2J Docs Linter](https://github.com/stein2nd/docs-linter) / [Global Composer Setup](https://github.com/stein2nd/global-composer-setup) と同様、**フル Clean Architecture は採用しません**。
 

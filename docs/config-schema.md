@@ -3,7 +3,7 @@
 ホストプロジェクトが置く **`ack.config.json`** と、onot 用 **YAML** の草案です。
 v1では JSON Schema ファイル (`schema/ack.config.schema.json`) の同梱を想定します。
 
-## `ack.config.json` (最小例)
+## `ack.config.json` (最小例) `{@config-schema:s-ack-config-json}`
 
 `init` が作成する **`./venv/`** を `generate` / `doctor` が onot 解決に使います。変更する場合のみ `tools.venvPath` を指定します。
 
@@ -28,7 +28,7 @@ v1では JSON Schema ファイル (`schema/ack.config.schema.json`) の同梱を
 }
 ```
 
-## フィールド一覧
+## フィールド一覧 `{@config-schema:s-h002}`
 
 未知キーは v1では **警告** を出し無視します (前方互換)。
 
@@ -60,7 +60,7 @@ v1では JSON Schema ファイル (`schema/ack.config.schema.json`) の同梱を
 | `tools.venvPath` | string | いいえ | ホストルート相対。デフォルト `venv` (`init` が作成) |
 | `tools.onotPath` | string | いいえ | onot 実行ファイルを明示 (通常は `{venvPath}/bin/onot` を自動使用) |
 
-## WordPress プリセット例
+## WordPress プリセット例 `{@config-schema:s-wordpress}`
 
 `scan.exclude` は Syft に渡す除外パターンの抽象フィールドです。実フラグへのマッピングは、実装時に [presets.md](./presets.md) と同期します。
 
@@ -91,11 +91,11 @@ v1では JSON Schema ファイル (`schema/ack.config.schema.json`) の同梱を
 }
 ```
 
-### WordPress と `composer.lock` (v1)
+### WordPress と `composer.lock` (v1) `{@config-schema:s-wordpress-composer-lock-v1}`
 
 `composer.lock` のみを Syft 入力にする例は **v1では非サポート** です。[presets.md](./presets.md) / [decisions/003-spdx-merge-and-syft.md](./decisions/003-spdx-merge-and-syft.md)。v1では上記 `vendor/` 付き例を正とします。
 
-## ディレクトリのみ (`dir`)
+## ディレクトリのみ (`dir`) `{@config-schema:s-dir}`
 
 ```json
 {
@@ -109,16 +109,16 @@ v1では JSON Schema ファイル (`schema/ack.config.schema.json`) の同梱を
 }
 ```
 
-## onot 設定 YAML
+## onot 設定 YAML `{@config-schema:s-onot-yaml}`
 
-### 配置
+### 配置 `{@config-schema:s-h007}`
 
 | 方式 | 説明 |
 | --- | --- |
 | ホストプロジェクト直下 | `onot.yaml` を `pipeline.onotConfig` で指定 |
 | プリセット同梱 | `presets/.../onot.yaml.example` をコピー元として **`init`** がホストに生成 (`onot.yaml` 未存在時のみ) |
 
-### 内容 (概念)
+### 内容 (概念) `{@config-schema:s-h008}`
 
 **Notice テンプレートのメタデータ** を記述します (onot **1.2.x** は `company:` 配下)。
 サードパーティーパッケージのライセンス本文そのものは SBOM / onot が解決します。
@@ -134,7 +134,7 @@ company:
 
 トップレベルの `organization` 等は onot v1.2では **拒否** されます (`extra_forbidden`)。CLI `--help` のフラット列挙は `company` ネストと同義です。ひな型: [presets/shared/onot.yaml.example](../presets/shared/onot.yaml.example)。
 
-## 環境変数 (オプション)
+## 環境変数 (オプション) `{@config-schema:s-h009}`
 
 CLI 引数より優先度は低くします (CI でのオーバーライト用)。
 
@@ -146,7 +146,7 @@ CLI 引数より優先度は低くします (CI でのオーバーライト用)�
 
 `doctor` のフルモードは `ACK_CONFIG` または `--config` を参照します ([cli.md](./cli.md))。
 
-## バリデーション
+## バリデーション `{@config-schema:s-h010}`
 
 * `output` が空、または親ディレクトリが作成不能 → exit `2`
 * `preset` 未知 → exit `2`

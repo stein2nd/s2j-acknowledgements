@@ -2,7 +2,7 @@
 
 v1向けの実装 initiative タスクです。状態は [status.md](./status.md) で集計します。
 
-## v1着手前の確定事項 (Must decide → 決定済み)
+## v1着手前の確定事項 (Must decide → 決定済み) `{@implementation:s-v1-must-decide}`
 
 | 項目 | 決定 | 参照 |
 | --- | --- | --- |
@@ -12,11 +12,11 @@ v1向けの実装 initiative タスクです。状態は [status.md](./status.md
 | Feluda デフォルト | `macos-app` / `wordpress` `true`、`dir` `false` | `presets/*/defaults.json` |
 | `composer.lock` のみ | v1非対象 | ADR-003 |
 
-## 非目的
+## 非目的 `{@implementation:s-h002}`
 
 本ファイルは仕様本文の重複コピーを持ちません。各節の正本は `docs/*.md` です。
 
-## フェーズ0: リポジトリ骨格
+## フェーズ0: リポジトリ骨格 `{@implementation:s-h003}`
 
 | ID | タスク | 状態 |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ v1向けの実装 initiative タスクです。状態は [status.md](./status.md
 | P0-07 | ESLint / Prettier / Vitest、`npm run lint` / `test` | **完了** |
 | P0-08 | `.github/workflows/dist-zip.yml`、`npm run dist` → `release/*.zip` | **完了** |
 
-## フェーズ1: doctor
+## フェーズ1: doctor `{@implementation:s-doctor}`
 
 | ID | タスク | 状態 |
 | --- | --- | --- |
@@ -40,7 +40,7 @@ v1向けの実装 initiative タスクです。状態は [status.md](./status.md
 | P1-05 | `scripts/test-doctor.sh` (docs-linter 同型) | **完了** (CI dist-zip に組込み) |
 | P1-06 | `.gitignore` 行判定 ([cli.md](./cli.md)) | **完了** |
 
-## フェーズ2: 設定、プリセット、`init`
+## フェーズ2: 設定、プリセット、`init` `{@implementation:s-init}`
 
 | ID | タスク | 状態 |
 | --- | --- | --- |
@@ -51,7 +51,7 @@ v1向けの実装 initiative タスクです。状態は [status.md](./status.md
 | P2-05 | `init`: `.gitignore` 案内・`--write-gitignore`・既存時 WARN | **完了** |
 | P2-06 | onot 解決 (`venv/bin/onot` 優先) を generate / doctor で共有 | **完了** |
 
-## フェーズ3: ターゲット解決
+## フェーズ3: ターゲット解決 `{@implementation:s-h006}`
 
 | ID | タスク | 状態 |
 | --- | --- | --- |
@@ -61,7 +61,7 @@ v1向けの実装 initiative タスクです。状態は [status.md](./status.md
 | P3-04 | SPM `SourcePackages/checkouts` パス解決 | **完了** (`.app` 解決後の DerivedData 優先、`.build/checkouts` フォールバック) |
 | P3-05 | `project.yml` 読み取り (任意) | **完了** (`name:` ベストエフォート、yaml 依存なし) |
 
-## フェーズ4: パイプライン
+## フェーズ4: パイプライン `{@implementation:s-h007}`
 
 | ID | タスク | 状態 |
 | --- | --- | --- |
@@ -72,24 +72,24 @@ v1向けの実装 initiative タスクです。状態は [status.md](./status.md
 | P4-05 | 成果物コピーと `workDir` 清理 | **完了** (`output` 内外で削除ポリシー分岐) |
 | P4-06 | `--dry-run`, `--verbose`, `--keep-intermediate` | **完了** |
 
-## フェーズ5: ホスト統合
+## フェーズ5: ホスト統合 `{@implementation:s-h008}`
 
 | ID | タスク | 状態 |
 | --- | --- | --- |
 | P5-01 | [S2J Cozy Brew](https://github.com/stein2nd/s2j-cozy-brew) 用 `ack.config.json` 例 | **完了** (`examples/cozy-brew/`) |
 | P5-02 | Cozy Brew `package.json` に `ack:*` scripts | **完了** (`package.json.scripts.example`) |
 | P5-03 | WordPress プリセット README 例 | **完了** (`examples/wordpress-plugin/`、`pipeline.noticeProductName` 例) |
-| P5-04 | npm 公開手順 (private → public) | **完了** (`@s2j/acknowledgements@0.1.13` npm `latest`) |
+| P5-04 | npm 公開手順 (private → public) | **完了** (`@s2j/acknowledgements@0.1.14` npm `latest`) |
 
-## フェーズ6: ドキュメント移行
+## フェーズ6: ドキュメント移行 `{@implementation:s-h009}`
 
 | ID | タスク | 状態 |
 | --- | --- | --- |
 | P6-01 | `docs_mod/` 確定版を `docs/` に移行 | **完了** |
 | P6-02 | README クイックスタート | **完了** |
-| P6-03 | CHANGELOG / Git tag リリース記載 | **完了** (`v0.1.0` … `v0.1.13`) |
+| P6-03 | CHANGELOG / Git tag リリース記載 | **完了** (`v0.1.0` … `v0.1.14`) |
 
-## 将来 (v1スコープ外)
+## 将来 (v1スコープ外) `{@implementation:s-v1}`
 
 | 項目 | 備考 |
 | --- | --- |

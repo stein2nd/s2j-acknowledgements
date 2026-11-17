@@ -3,7 +3,7 @@
 `macos-app` プリセットで Release `.app` を見つける手順です。
 **ホストプロジェクトルート** は [cli.md](./cli.md) に従い `--cwd` (デフォルト `process.cwd()`) です。`ack.config.json` は通常このルートに置きます。`package.json` がないホスト (例: WordPress のみ) でも、`ack.config.json` + `--cwd` で運用します。
 
-## 優先順位
+## 優先順位 `{@xcode-target-resolution:s-h001}`
 
 解決は下記の順で試み、**最初に成功した方法** を採用します。
 
@@ -14,7 +14,7 @@
 | 3 | DerivedData の glob | ローカル (フォールバック) |
 | 4 | `mdfind` (限定) | 最終手段 (v1では任意実装) |
 
-## 1. 明示パス
+## 1. 明示パス `{@xcode-target-resolution:s1}`
 
 下記のいずれかが設定されていれば、他を試しません。
 
@@ -24,14 +24,14 @@
 
 パスは `.app` ディレクトリを指す必要があります (ファイルでないこと)。
 
-## 2. xcodebuild
+## 2. xcodebuild `{@xcode-target-resolution:s2}`
 
-### 前提
+### 前提 `{@xcode-target-resolution:s-h004}`
 
 * ルート付近に `ack.config.json` の `xcode.project` または自動検出した `*.xcodeproj`
 * `xcode.scheme` (未指定時はプリセットまたは単一 Scheme 推論 — 複数ある場合は設定必須)
 
-### コマンド (概念)
+### コマンド (概念) `{@xcode-target-resolution:s-h005}`
 
 ```zsh
 xcodebuild \
@@ -41,7 +41,7 @@ xcodebuild \
   -showBuildSettings
 ```
 
-### 取得する設定
+### 取得する設定 `{@xcode-target-resolution:s-h006}`
 
 | キー | 用途 |
 | --- | --- |
@@ -52,9 +52,9 @@ xcodebuild \
 
 `project.yml` (XcodeGen) のみで `.xcodeproj` がない場合は、生成済み `*.xcodeproj` の存在を前提とするか、Scheme 名から DerivedData にフォールバックします (ホスト README に「先に xcodegen / ビルドを実行」と記載)。
 
-## 3. DerivedData glob
+## 3. DerivedData glob `{@xcode-target-resolution:s3}`
 
-### パスパターン (草案)
+### パスパターン (草案) `{@xcode-target-resolution:s-h008}`
 
 ```text
 ~/Library/Developer/Xcode/DerivedData/<DerivedDataFolder>/Build/Products/Release/*.app
@@ -66,7 +66,7 @@ xcodebuild \
 * `project.yml` の `name` (yaml パース — 依存 `yaml` は許容)
 * `xcode.productName` と組み合わせ
 
-### 複数ヒット時
+### 複数ヒット時 `{@xcode-target-resolution:s-h009}`
 
 | 戦略 | 説明 |
 | --- | --- |
@@ -74,7 +74,7 @@ xcodebuild \
 | mtime 最新 | 同一条件で複数残る場合 |
 | 失敗 | 2件以上で識別不能なら exit `2` とし、明示パスを促す |
 
-## 4. mdfind (任意)
+## 4. mdfind (任意) `{@xcode-target-resolution:s4}`
 
 ```zsh
 mdfind 'kMDItemFSName == "CozyBrewApp.app"'
@@ -83,11 +83,11 @@ mdfind 'kMDItemFSName == "CozyBrewApp.app"'
 単独では **古いビルド** を拾うため、パスに `Build/Products/Release` を含むものに限定します。
 v1では DerivedData glob が十分なら **未実装でもよい** とします。
 
-## SPM checkouts パス (マージ用)
+## SPM checkouts パス (マージ用) `{@xcode-target-resolution:s-spm-checkouts}`
 
 `.app` 解決と独立に、`spm-checkouts` マージ用ディレクトリを探します。
 
-### 優先
+### 優先 `{@xcode-target-resolution:s-h012}`
 
 DerivedData フォルダー内:
 
@@ -95,11 +95,11 @@ DerivedData フォルダー内:
 .../SourcePackages/checkouts
 ```
 
-### フォールバック
+### フォールバック `{@xcode-target-resolution:s-h013}`
 
 リポジトリ内 `.build/checkouts` (SwiftPM ローカルビルド) — 存在すれば追加スキャン。
 
-## `project.yml` 手がかり
+## `project.yml` 手がかり `{@xcode-target-resolution:s-project-yml}`
 
 XcodeGen プロジェクトでは、下記を読み取ります (ベストエフォート)。
 
@@ -110,7 +110,7 @@ XcodeGen プロジェクトでは、下記を読み取ります (ベストエフ
 
 パース失敗時は `xcode.scheme` の明示設定にフォールバックします。
 
-## 失敗時メッセージ
+## 失敗時メッセージ `{@xcode-target-resolution:s-h015}`
 
 stderr に下記を含めます。
 
@@ -118,7 +118,7 @@ stderr に下記を含めます。
 2. 推奨: Release ビルド後に再実行、`--app` / `ACK_APP` の指定
 3. `ack:doctor` とは別問題であること (ツールはそろっていても `.app` がない場合)
 
-## CI 推奨
+## CI 推奨 `{@xcode-target-resolution:s-ci}`
 
 GitHub Actions 等では **ビルドステップの直後** に `xcodebuild -showBuildSettings` が最も安定します。
 artifact として `.app` パスを env に書き、`ACK_APP` を渡す方式も有効です。

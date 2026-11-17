@@ -3,7 +3,7 @@
 確定前の仕様ドキュメントへの導線です。
 [S2J Docs Linter](https://github.com/stein2nd/docs-linter) (`@s2j/docs-linter`) と同型の **薄い npm CLI オーケストレータ** として、サードパーティーソフトウェア向け **Acknowledgements** を生成するための草案です。
 
-## シリーズ位置付け
+## シリーズ位置付け `{@specs:s-h001}`
 
 | 項目 | 内容 |
 | --- | --- |
@@ -15,7 +15,7 @@
 | アプリケーション類型 | **CLUI ユーティリティ** (薄いオーケストレーション層) |
 | 主な成果物 | ホスト側が指定する `ACKNOWLEDGEMENTS.md` (初期は Markdown のみ) |
 
-## ドメインの境界
+## ドメインの境界 `{@specs:s-h002}`
 
 本ツールが担うのは **サードパーティーのソフトウェア・ライブラリ・ツール** についての Acknowledgements 生成です。
 
@@ -27,7 +27,7 @@ SBOM に載るコンポーネントは、必ずしも実行時依存だけでは
 | Acknowledgements 成果物 | `ACKNOWLEDGEMENTS.md` | **生成** |
 | Application License | GPL-3.0-or-later 等、自アプリのライセンス表示 | **非対象** |
 
-## 設計方針 (要約)
+## 設計方針 (要約) `{@specs:s-h003}`
 
 詳細は各専門仕様を正本とします。
 
@@ -40,7 +40,7 @@ SBOM に載るコンポーネントは、必ずしも実行時依存だけでは
 | onot | PyPI 前提。**`init` がホストに `./venv/` を作成** して pip インストール。`doctor` / `generate` は venv 内 `onot` を優先 |
 | 命名 | 成果物名に合わせ **Acknowledgements** (OSS コンプライアンス管理ツールではない) |
 
-## 仕様正本マトリックス
+## 仕様正本マトリックス `{@specs:s-h004}`
 
 矛盾時は下表の「正本」を更新し、他ファイルは追随させます。[decisions/002-canonical-sources.md](./decisions/002-canonical-sources.md)
 
@@ -54,12 +54,12 @@ SBOM に載るコンポーネントは、必ずしも実行時依存だけでは
 | Xcode `.app` 解決 | [xcode-target-resolution.md](./xcode-target-resolution.md) | — |
 | 設計決定ログ | [decisions/](./decisions/) | ADR 参照 |
 
-## ドキュメント命名規則
+## ドキュメント命名規則 `{@specs:s-h005}`
 
 * **ファイル名:** ASCII のみ (英数字、ハイフン)。日本語やスペースは使わない。
 * **タイトル:** 各ファイルの1行目に `# S2J Acknowledgements - …` 形式で記載する。
 
-## 仕様書一覧
+## 仕様書一覧 `{@specs:s-h006}`
 
 | ファイル | 概要 |
 | --- | --- |
@@ -80,26 +80,26 @@ SBOM に載るコンポーネントは、必ずしも実行時依存だけでは
 | [test-results.md](./test-results.md) | 手動 E2E / ホスト smoke の記録 |
 | [publish.md](./publish.md) | npm 公開チェックリスト |
 
-## 参照ユースケース
+## 参照ユースケース `{@specs:s-h007}`
 
 | ホスト | 目的 |
 | --- | --- |
 | [S2J Cozy Brew](https://github.com/stein2nd/s2j-cozy-brew) | About 画面から Acknowledgements を表示するため、ビルド時に MD を同梱 |
 | WordPress プラグイン (v1 **推奨** プリセット) | プラグイン配布物に `ACKNOWLEDGEMENTS.md` を含める |
 
-## 進行管理
+## 進行管理 `{@specs:s-h008}`
 
 | 種別 | 場所 |
 | --- | --- |
 | **公開正本** | [docs/](./) (本ディレクトリ) |
 | 草案スナップショット | [docs_mod/](../docs_mod/) (削除しない。参照用) |
 
-### 仕様書のライフサイクル
+### 仕様書のライフサイクル `{@specs:s-h009}`
 
 1. **草案:** `docs_mod/` で記述 (2026-11-12〜 確定まで)。
 2. **確定:** 必要に応じ既存 `docs/*.md` を `docs/archive/` に退避する。
 3. **公開正本:** 確定版を **`docs/`** に配置 (**完了:** 2026-11-12)。
 
-## ステータス
+## ステータス `{@specs:s-h010}`
 
 **正本:** 2026-11-12確定。`docs_mod/` は同日スナップショットを保持。

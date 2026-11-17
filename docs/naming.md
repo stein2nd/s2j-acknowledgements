@@ -2,7 +2,7 @@
 
 S2J シリーズにおける、本プロジェクトと npm パッケージの名前の決まりです。
 
-## 決定事項
+## 決定事項 `{@naming:s-h001}`
 
 | レイヤ | 決定 |
 | --- | --- |
@@ -14,7 +14,7 @@ S2J シリーズにおける、本プロジェクトと npm パッケージの�
 | デフォルトの成果物ファイル名 | `ACKNOWLEDGEMENTS.md` (ホストが `--out` / 設定で変更可) |
 | 開発用 `package.json` の name | 公開時は `@s2j/acknowledgements` と一致させる |
 
-## 採用しなかった候補
+## 採用しなかった候補 `{@naming:s-h002}`
 
 | 候補 | 理由 |
 | --- | --- |
@@ -23,14 +23,14 @@ S2J シリーズにおける、本プロジェクトと npm パッケージの�
 | `@s2j/software-credits` | Credits は謝意寄りで、ライセンス本文を含む成果物との対応が弱い |
 | ライセンス管理 / コンプライアンス管理を名に含む表現 | **自プロジェクトのライセンス表示** と混同しやすい |
 
-## 命名の根拠
+## 命名の根拠 `{@naming:s-h003}`
 
-### 「何を作るか」を名前にする
+### 「何を作るか」を名前にする `{@naming:s-h004}`
 
 [S2J Docs Linter](https://github.com/stein2nd/docs-linter) が **Markdown 文書の lint** を担うように、本ツールは **Acknowledgements 文書の生成** を担います。
 「何を管理するか」ではなく「何を出力するか」を前面に出します。
 
-### S2J シリーズとの並び
+### S2J シリーズとの並び `{@naming:s-s2j}`
 
 | ツール | npm | CLI | 役割 |
 | --- | --- | --- | --- |
@@ -53,7 +53,7 @@ S2J シリーズにおける、本プロジェクトと npm パッケージの�
 
 スクリプト名はホストごとに `ack:generate` 等に寄せてもよいです。CLI 名は固定します。
 
-## `package.json` への反映 (草案)
+## `package.json` への反映 (草案) `{@naming:s-package-json}`
 
 ```json
 {
@@ -75,7 +75,7 @@ S2J シリーズにおける、本プロジェクトと npm パッケージの�
 }
 ```
 
-## バージョン方針 (草案)
+## バージョン方針 (草案) `{@naming:s-h007}`
 
 * 初回公開は **0.1.0** (CLI 骨格 + `init` + `macos-app` / `dir` 最小実装。**`wordpress` プリセットは v1推奨** として `defaults.json` 同梱)。
 * Syft / onot / Feluda のバージョンは npm の semver とは独立し、README と `doctor` の **推奨ピン** としてドキュメント化する (詳細は [install.md](./install.md))。

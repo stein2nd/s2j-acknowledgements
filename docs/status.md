@@ -1,14 +1,14 @@
 # S2J Acknowledgements - 実装状況
 
-最終更新: 2026-11-13
+最終更新: 2026-11-17
 
 索引は [specs.md](./specs.md) です。タスク ID の正本は [implementation.md](./implementation.md) です。
 
-**npm:** `@s2j/acknowledgements` **0.1.13** (`latest`、tag `v0.1.13`)
+**npm:** `@s2j/acknowledgements` **0.1.14** (`latest`、tag `v0.1.14`)
 
 **v1到達 (2026-11-13):** `dir` 手動 E2E、npm 公開・[S2J Cozy Brew](https://github.com/stein2nd/s2j-cozy-brew) で `init` / `doctor` / `generate` / Resources 同梱 / [S2J About Window](https://github.com/stein2nd/s2j-about-window) の License、Acknowledgements 表示まで確認 ([test-results.md](./test-results.md))。
 
-## 仕様書 (参照元)
+## 仕様書 (参照元) `{@status:s-h001}`
 
 * [specs.md](./specs.md) — 索引・正本マトリックス
 * [cli.md](./cli.md) / [pipeline.md](./pipeline.md) / [config-schema.md](./config-schema.md) / [presets.md](./presets.md)
@@ -19,7 +19,7 @@
 * [decisions/](./decisions/) — ADR-001–003
 * [implementation.md](./implementation.md) — フェーズ別タスク ID
 
-## 機能一覧
+## 機能一覧 `{@status:s-h002}`
 
 **完了条件列:** 100% 到達用チェックリスト。`[x]` = 満たし済み、`[ ]` = 未。詳細は各§のアンカーに。
 
@@ -39,17 +39,17 @@
 
 **v1全体 (上表の加重なし平均):** **100%** (仕様行・ゲート外 G1〜 G3を除くチェックリスト完走)。
 
-## 100% 完了条件チェックリスト
+## 100% 完了条件チェックリスト `{@status:s100}`
 
 各§は **実装 → `npm run test` / 手動 smoke** の順。タスク ID は [implementation.md](./implementation.md) に対応。
 
-### 仕様 {#status-spec-docs}
+### 仕様 `{@status:s-status-spec-docs}`
 
 * [x] 正本が `docs/`、`docs_mod/` はスナップショット ([decisions/002-canonical-sources.md](./decisions/002-canonical-sources.md))
 * [x] ADR-001–003 (venv、`composer.lock` 非対象、SPDX マージ)
 * [x] `schema/ack.config.schema.json` + [config-schema.md](./config-schema.md) 同期 (`pipeline.noticeDenylist` 等含む)
 
-### 骨格 {#status-skeleton}
+### 骨格 `{@status:s-status-skeleton}`
 
 正本: [layout.md](./layout.md)
 
@@ -62,7 +62,7 @@
 * [x] P0-07: ESLint / Prettier / Vitest、`npm run lint` / `test`
 * [x] P0-08: [`.github/workflows/dist-zip.yml`](../.github/workflows/dist-zip.yml)、`npm run dist`
 
-### doctor {#status-doctor}
+### doctor `{@status:s-doctor-status-doctor}`
 
 正本: [cli.md](./cli.md)
 
@@ -73,12 +73,12 @@
 * [x] P1-04: exit code 契約 (`test-doctor.sh` ACK-001〜006、[cli.md](./cli.md))
 * [x] P1-05: [scripts/test-doctor.sh](../scripts/test-doctor.sh) + CI
 
-#### Test
+#### Test `{@status:s-test}`
 
 * [x] Vitest (gitignore 等)
 * [x] `npm run test:doctor` を dist-zip CI に組込み
 
-### 設定、init {#status-config-init}
+### 設定、init `{@status:s-init-status-config-init}`
 
 正本: [config-schema.md](./config-schema.md)、[decisions/001-venv-and-init.md](./decisions/001-venv-and-init.md)
 
@@ -89,12 +89,12 @@
 * [x] P2-06: onot 解決 (`venv/bin/onot` 優先) を `doctor` / `generate` で共有
 * [x] P2-01: `generate` 前の JSON Schema 検証 (Ajv)
 
-#### Test
+#### Test `{@status:s-test-2}`
 
 * [x] `loadMergedAckConfig` / パイプライン dry-run fixture
 * [x] 不正設定で exit `2` (ACK-005、`validate-ack-config` Vitest)
 
-### Xcode 解決 {#status-Xcode}
+### Xcode 解決 `{@status:s-xcode-status-xcode}`
 
 正本: [xcode-target-resolution.md](./xcode-target-resolution.md)
 
@@ -104,12 +104,12 @@
 * [x] P3-04: SPM `SourcePackages/checkouts` (DerivedData → env → `.build/checkouts`)
 * [x] P3-05: `project.yml` の `name:` (ベストエフォート)
 
-#### Test
+#### Test `{@status:s-test-3}`
 
 * [x] Vitest: `parse-build-settings`、`derived-data`、`resolve-app` (明示 `.app`)、`project-yml`、SPDX ドキュメント名 (**31** 件中 Xcode / SPDX 関連含む)
 * [x] 実ホスト (Cozy Brew): Release ビルド後 `generate` (v0.1.9配布向け Components) + About UI — [test-results.md](./test-results.md) 2026-11-13
 
-### パイプライン {#status-pipeline}
+### パイプライン `{@status:s-status-pipeline}`
 
 正本: [pipeline.md](./pipeline.md)、[decisions/003-spdx-merge-and-syft.md](./decisions/003-spdx-merge-and-syft.md)
 
@@ -125,35 +125,35 @@
 * [x] `generate` デフォルト設定 `{cwd}/ack.config.json` (`doctor` と同型、ACK-002)
 * [x] `macos-app` デフォルト: `scan.exclude` (`.github` 等)、`pipeline.feluda: true`、`noticeDenylist` (CI Action)
 
-#### Test
+#### Test `{@status:s-test-4}`
 
 * [x] Vitest: `spdx-merge`、`spdx-anonymize`、`pipeline` dry-run、`workdir-cleanup`、`onot-output`
 * [x] onot あり E2E (`dir`): [e2e.md](./e2e.md)、記録 [test-results.md](./test-results.md) 2026-11-12
 
-### ホスト統合 {#status-host}
+### ホスト統合 `{@status:s-status-host}`
 
 * [x] P5-01: [examples/cozy-brew](../examples/cozy-brew/) `ack.config.json` (`scheme` / `productName`: **CozyBrewApp**)。[examples/dir](../examples/dir/)、[examples/wordpress-plugin](../examples/wordpress-plugin/) に `noticeProductName` 例
 * [x] P5-02: `package.json.scripts.example` (`ack:*`)
 * [x] P5-03: [examples/wordpress-plugin](../examples/wordpress-plugin/) README 付き例
-* [x] P5-04: npm 公開 ([publish.md](./publish.md)、**latest v0.1.13**)
+* [x] P5-04: npm 公開 ([publish.md](./publish.md)、**latest v0.1.14**)
 
-### ドキュメント・リリース {#status-docs-release}
+### ドキュメント・リリース `{@status:s-status-docs-release}`
 
 * [x] P6-01: `docs_mod/` 確定版を `docs/` に移行
 * [x] P6-02: README クイックスタート ([README.md](../README.md))
-* [x] P6-03: CHANGELOG / Git tag **v0.1.0… v0.1.13**
+* [x] P6-03: CHANGELOG / Git tag **v0.1.0… v0.1.14**
 
-### 品質、CI {#status-quality}
+### 品質、CI `{@status:s-ci-status-quality}`
 
 * [x] `npm run lint`: ESLint + `tsc --noEmit`
 * [x] `npm run test`: Vitest (**35** 件、パイプライン、SPDX / Notice 名、Xcode 純関数等)
 * [x] `npm run test:doctor`: ACK-001〜006
 * [x] `npm run build` / `prepare` → 配布可能 `dist/bin/cli.js`
 * [x] `npm run dist` + CI dist-zip (Lint → Test → Build & zip → artifact)
-* [x] [`.github/workflows/npm-publish.yml`](../.github/workflows/npm-publish.yml): tag `v*` で publish (0.1.4〜0.1.13)
+* [x] [`.github/workflows/npm-publish.yml`](../.github/workflows/npm-publish.yml): tag `v*` で publish (0.1.4〜0.1.14)
 * [x] Node v22 `engines` と workflow 整合 (`ubuntu-24.04`)
 
-## v1ゲート外・任意 {#status-gates}
+## v1ゲート外・任意 `{@status:s-v1-status-gates}`
 
 **100% 分母外** (完了しても機能一覧の％は変えない場合あり)。
 
@@ -163,15 +163,15 @@
 | G2 | `docs-lint` CI | 姉妹 Docs Linter 同型 (任意) |
 | G3 | Windows ターゲット解決 | v1非目標 |
 | G4 | 実ホスト (Cozy Brew / WP) で `macos-app` / `wordpress` generate | **Cozy Brew 済** — generate + About で表・長文 License 表示まで ([test-results.md](./test-results.md) 2026-11-13に UI 行)。**WordPress 実ホストは未** |
-| G5 | npm 公開の実コマンド実行 | **済** — registry `latest` **0.1.13** |
+| G5 | npm 公開の実コマンド実行 | **済** — registry `latest` **0.1.14** |
 
-## 補足
+## 補足 `{@status:s-h018}`
 
 * **実装％** は各§チェックリストの `[x]` 比率 (仕様行・ゲート外を除く)。
 * タスクの粒度、ID は [implementation.md](./implementation.md) を正本とし、本ファイルは集計と完了条件のみを持つ。implementation の個別バージョン表記が古い場合は本ファイルと [CHANGELOG.md](../CHANGELOG.md) を優先。
 * Cozy Brew 検証で判明した **ホスト側前提:** Release 構成で `.app` を DerivedData に置くこと、`ack.config.json` の `xcode.scheme` / `productName` が実ターゲットと一致すること、`onot.yaml` が onot v1.2の `company:` 形であること。
 
-## 実装ロードマップ (到達順)
+## 実装ロードマップ (到達順) `{@status:s-h019}`
 
 1. **骨格 + 品質 + パイプライン + Xcode** — 済
 2. **Schema 検証、Feluda、workDir、test-doctor、onot 出力ディレクトリ** — 済
@@ -185,8 +185,9 @@
 10. **0.1.11.1** — 済 (dist-zip / Prettier、Git tag のみ)
 11. **0.1.12** — 済 (npm `latest` 是正、`0.1.1-1.1` 回避)
 12. **0.1.13** — 済 (examples / docs、Cozy Brew 見出し記録)
+13. **0.1.14** — 済 (`docs:heading-tags`、仕様書見出しタグ)
 
-## 次のアクション (推奨)
+## 次のアクション (推奨) `{@status:s-h020}`
 
 | 優先 | 内容 |
 | --- | --- |

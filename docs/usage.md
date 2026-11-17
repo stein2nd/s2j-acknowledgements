@@ -2,7 +2,7 @@
 
 ホストプロジェクトから本ツールを呼び出す手順の草案です。
 
-## コマンドの関係
+## コマンドの関係 `{@usage:s-h001}`
 
 ```mermaid
 flowchart LR
@@ -19,15 +19,15 @@ flowchart LR
 * **初回ローカル**: `npm install` → `init --preset …` → Syft 導入 → `doctor` → `generate`
 * **CI**: `npm ci` → `setup-python` → **冪等 `init`** (または venv キャッシュ) → `doctor --config ack.config.json` → `generate`
 
-## 導入
+## 導入 `{@usage:s-h002}`
 
-### 1. npm
+### 1. npm `{@usage:s1}`
 
 ```zsh
 npm install -D @s2j/acknowledgements
 ```
 
-### 2. `init` (設定 + `./venv/` + onot)
+### 2. `init` (設定 + `./venv/` + onot) `{@usage:s2}`
 
 ```zsh
 s2j-acknowledgements init --preset macos-app
@@ -41,17 +41,17 @@ s2j-acknowledgements init --preset macos-app
 s2j-acknowledgements init --preset macos-app --write-gitignore
 ```
 
-### 3. Syft (ホスト手動)
+### 3. Syft (ホスト手動) `{@usage:s3}`
 
 [install.md](./install.md) に従い Syft を入れます (`brew install syft` 等)。`init` ではインストールしません。
 
-### 4. 診断
+### 4. 診断 `{@usage:s4}`
 
 ```zsh
 s2j-acknowledgements doctor --config ack.config.json
 ```
 
-### 5. `package.json` scripts
+### 5. `package.json` scripts `{@usage:s5}`
 
 ```json
 {
@@ -64,9 +64,9 @@ s2j-acknowledgements doctor --config ack.config.json
 
 命名はホスト規約に合わせて `generate:acknowledgements` でもかまいません。
 
-## 典型的なワークフロー
+## 典型的なワークフロー `{@usage:s-h008}`
 
-### macOS アプリ (Cozy Brew)
+### macOS アプリ (Cozy Brew) `{@usage:s-macos-cozy-brew}`
 
 ビルド前に generate すると `.app` 未解決になる場合があります。[xcode-target-resolution.md](./xcode-target-resolution.md) を参照してください。
 
@@ -75,17 +75,17 @@ s2j-acknowledgements doctor --config ack.config.json
 3. 生成された `ACKNOWLEDGEMENTS.md` をアプリバンドル/リポジトリにコミット
 4. About 画面は **同梱 MD を表示** (ランタイムで onot を呼ばない)
 
-### WordPress プラグイン
+### WordPress プラグイン `{@usage:s-wordpress}`
 
 1. `composer install` / ビルド後、プラグインルートで `npm run ack:generate`
 2. `ACKNOWLEDGEMENTS.md` を配布物に含める
 3. 設定画面や README からリンク (任意)
 
-### 汎用ディレクトリ
+### 汎用ディレクトリ `{@usage:s-h011}`
 
 `preset: dir` と `scanPaths` で任意パスをスキャンします。
 
-## CI 例 (概念)
+## CI 例 (概念) `{@usage:s-ci}`
 
 `init` は **冪等** (既存 `ack.config.json` はスキップ、exit `0`) のため、毎ジョブ実行してもかまいません。`venv/` は **キャッシュ** するか、毎回 `init` で再構築するかを選びます。いずれも Git には載せません。
 
@@ -105,7 +105,7 @@ s2j-acknowledgements doctor --config ack.config.json
     ACK_APP: ${{ steps.build.outputs.app_path }}
 ```
 
-## `.gitignore` 推奨
+## `.gitignore` 推奨 `{@usage:s-gitignore}`
 
 `init` が案内する最小セット:
 
@@ -117,7 +117,7 @@ build/oss-notice/
 ホストにすでに `.gitignore` がある場合は **手動で** 上記行を足してください (`doctor` が WARN)。
 最終 `ACKNOWLEDGEMENTS.md` は **コミットする** ケースが多いです (About 表示・レビュー容易化)。
 
-## ドライラン
+## ドライラン `{@usage:s-h014}`
 
 解決された `.app`、実行予定の Syft / onot コマンド、出力先を表示します。
 
@@ -125,7 +125,7 @@ build/oss-notice/
 s2j-acknowledgements generate --config ack.config.json --dry-run
 ```
 
-## トラブルシュート
+## トラブルシュート `{@usage:s-h015}`
 
 | 症状 | 確認 |
 | --- | --- |
@@ -135,7 +135,7 @@ s2j-acknowledgements generate --config ack.config.json --dry-run
 | 古い `.app` をスキャン | `--app` で明示、DerivedData の mtime |
 | Feluda で失敗 | `--skip-feluda` で切り分け |
 
-## S2J 他ツールとの併用
+## S2J 他ツールとの併用 `{@usage:s-s2j}`
 
 [S2J Docs Linter](https://github.com/stein2nd/docs-linter) と同様、`devDependency` として並べます。
 

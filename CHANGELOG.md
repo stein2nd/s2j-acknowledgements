@@ -2,6 +2,16 @@
 
 ## unreleased
 
+## 0.1.14 - 2026-11-17
+
+### Added
+
+* `scripts/apply-heading-tags.py` と npm script `docs:heading-tags` — `docs/` 等の ATX 見出しに `{@<stem>:s…}` タグを付与
+
+### Changed
+
+* docs: 仕様書、ADR、examples 向け Markdown に見出しタグを追記 (s2j-source-list と同型の相互参照用)
+
 ## 0.1.13 - 2026-11-13
 
 ### Added

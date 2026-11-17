@@ -3,7 +3,7 @@
 Vite + TypeScript で CLI をビルドするリポジトリレイアウトの草案です。
 [S2J Docs Linter](https://github.com/stein2nd/docs-linter) の製造ラインにそろえます。
 
-## ディレクトリ (目標)
+## ディレクトリ (目標) `{@layout:s-h001}`
 
 ```text
 S2J-Acknowledgements/
@@ -31,7 +31,7 @@ S2J-Acknowledgements/
 └── vite.config.ts          # または tsc のみ (docs-linter は tsc 主体)
 ```
 
-## ビルド
+## ビルド `{@layout:s-h002}`
 
 | 項目 | 方針 |
 | --- | --- |
@@ -42,7 +42,7 @@ S2J-Acknowledgements/
 | `prepare` | `npm run build` (publish 時) |
 | 配布 zip | `npm run dist` → `release/s2j-acknowledgements-<version>.zip` ([.github/workflows/dist-zip.yml](../.github/workflows/dist-zip.yml)) |
 
-## npm `files`
+## npm `files` `{@layout:s-npm-files}`
 
 ```json
 [
@@ -56,7 +56,7 @@ S2J-Acknowledgements/
 ]
 ```
 
-## `engines`
+## `engines` `{@layout:s-engines}`
 
 開発依存の `@s2j/docs-linter` は `>=20` ですが、Node v20は2026-04に EOL、GitHub Actions の Action ランタイムからも2026-09に Node v20が除外されています。
 
@@ -68,7 +68,7 @@ S2J-Acknowledgements/
 }
 ```
 
-## 開発用 scripts (草案)
+## 開発用 scripts (草案) `{@layout:s-scripts}`
 
 ```json
 {
@@ -82,7 +82,7 @@ S2J-Acknowledgements/
 }
 ```
 
-## ホストプロジェクトレイアウト (`init` 後)
+## ホストプロジェクトレイアウト (`init` 後) `{@layout:s-init}`
 
 本パッケージが **ホスト側** に追加する標準配置です (ホストのアプリ用 `.venv` とは別名)。
 
@@ -97,7 +97,7 @@ host-project/
 
 `venv/` は [install.md](./install.md) / [usage.md](./usage.md) の `.gitignore` 案内の正本です。
 
-## テスト方針 (草案)
+## テスト方針 (草案) `{@layout:s-h007}`
 
 | 層 | 手法 |
 | --- | --- |
@@ -107,7 +107,7 @@ host-project/
 
 フル E2E (Syft + onot 必須) は CI の optional job とします。
 
-## ドキュメント
+## ドキュメント `{@layout:s-h008}`
 
 | 場所 | 役割 |
 | --- | --- |
@@ -115,7 +115,7 @@ host-project/
 | `docs_mod/` | 確定に移行時のスナップショット |
 | `README.md` | クイックスタート + `docs/` へのリンク |
 
-## ライセンス
+## ライセンス `{@layout:s-h009}`
 
 リポジトリ `LICENSE` に従います (現行 GPL-3.0-or-later)。
 生成される Acknowledgements の内容は **サードパーティーライセンス**であり、本ツールのライセンスとは別です。

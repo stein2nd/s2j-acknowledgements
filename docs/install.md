@@ -3,7 +3,7 @@
 本 npm パッケージは **Syft / Feluda / onot を同梱しません**。
 README と `doctor` が、下記の前提を案内します。
 
-## 一覧
+## 一覧 `{@install:s-h001}`
 
 厳密には、「すべて `brew install`」は **Syft のみ** と言えます。
 onot は brew 公式 formula 未定義を前提とします。
@@ -15,7 +15,7 @@ onot は brew 公式 formula 未定義を前提とします。
 | onot | Notice 生成 | はい | **`init` がホストに `./venv/` を作り pip でインストール** (標準)。代替: pipx 等は上級者向け |
 | Feluda | 補完・監査 | いいえ | 配布元 README に従う |
 
-## Node.js と GitHub Actions
+## Node.js と GitHub Actions `{@install:s-node-js-github-actions}`
 
 混同しやすい点が2つあります。
 
@@ -26,7 +26,7 @@ onot は brew 公式 formula 未定義を前提とします。
 
 本ツールは **TypeScript CLI** です。GitHub Actions でホストの `ack:generate` を回すときは、たとえば `setup-node` で **v22または v24** を指定し、サードパーティ Action は Node v24対応のタグ/SHA にそろえます。Node v20を `setup-node` に固定したままにしても、**Action ランタイム廃止**とは別問題ですが、EOL ランタイムでの CI は避けてください。
 
-## Syft
+## Syft `{@install:s-syft}`
 
 推奨バージョンは `doctor` 出力と `docs/` (将来) にメタ記載します。実装の開始時点の Syft をピン留めし、破壊的な変更時にドキュメント更新します。
 
@@ -35,9 +35,9 @@ brew install syft
 syft version
 ```
 
-## onot
+## onot `{@install:s-onot}`
 
-### 標準: ホストの `./venv/` (`init`)
+### 標準: ホストの `./venv/` (`init`) `{@install:s-venv-init}`
 
 Python **3.11以上** の `python3` が PATH にあることが前提です。
 
@@ -55,14 +55,14 @@ pip install 'onot[spdx,cyclonedx]==1.2.0' openpyxl
 
 `generate` / `doctor` は **`./venv/bin/onot`** を優先して呼びます ([cli.md](./cli.md))。`npm install` だけでは venv は作られません。
 
-### `.gitignore`
+### `.gitignore` `{@install:s-gitignore}`
 
 `venv/` は Git に含めません。`init` は次を行います。
 
 * ホストに **`.gitignore` がない**: 推奨内容を案内。`--write-gitignore` で最小ファイルを **新規作成** 可能 ([cli.md](./cli.md))
 * **すでに `.gitignore` がある**: 自動追記しない。`venv/` / `build/oss-notice/` がなければ WARN
 
-### 代替: pipx (グローバル)
+### 代替: pipx (グローバル) `{@install:s-pipx}`
 
 チーム方針で venv を置きたくない場合のみ。`doctor` は PATH 上の `onot` にフォールバックします。
 
@@ -73,16 +73,16 @@ pipx install 'onot[spdx,cyclonedx]==1.2.0'
 pipx inject onot openpyxl
 ```
 
-### Cozy Brew との関係
+### Cozy Brew との関係 `{@install:s-cozy-brew}`
 
 アプリ本体制作用の **既存 `.venv`** と、Acknowledgements 用の **`./venv/`** は **別ディレクトリ** として共存させます。本ツールはアプリ用 venv を有効化しません。
 
-### 将来
+### 将来 `{@install:s-h009}`
 
 * 上流への Homebrew formula 要望
 * `init --repair-venv` (pip 再同期)
 
-## Feluda
+## Feluda `{@install:s-feluda}`
 
 インストール経路は固定しません (cargo、GitHub Releases 等)。
 
@@ -93,14 +93,14 @@ which feluda && feluda --version
 
 `pipeline.feluda: true` のホストのみ、`doctor` で必須扱いにします。
 
-## 本ツール本体
+## 本ツール本体 `{@install:s-h011}`
 
 ```zsh
 npm install -D @s2j/acknowledgements
 npx s2j-acknowledgements doctor
 ```
 
-## インストールしないこと (v1)
+## インストールしないこと (v1) `{@install:s-v1}`
 
 WordPress プラグイン CI 向けの **任意 Docker イメージ** (`syft` + `onot` + `feluda`) は将来 initiative とします。
 
@@ -110,12 +110,12 @@ WordPress プラグイン CI 向けの **任意 Docker イメージ** (`syft` + 
 | npm dependency に Syft バイナリ同梱 | プラットフォーム別バイナリ管理が別製品級 |
 | Docker 必須 (ローカル) | macOS アプリ開発者の摩擦が大きい |
 
-## バージョンピン
+## バージョンピン `{@install:s-h013}`
 
 正本はリポジトリ直下の **[config/recommended-tools.json](../config/recommended-tools.json)** です。`init` の pip と `doctor` の WARN がこれに従います。
 
 厳密な semver 縛りは `doctor` では **WARN** とし、メジャー不一致のみ **ERROR** とする案を v1デフォルトにします (詳細は実装で調整)。
 
-## Windows
+## Windows `{@install:s-windows}`
 
 v1ではサポート対象外です。`doctor` は非 macOS で一部チェックをスキップし、パス解決は `dir` / `wordpress` のみを想定します。
