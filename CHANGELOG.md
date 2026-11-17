@@ -2,6 +2,12 @@
 
 ## unreleased
 
+## 0.1.15 - 2026-11-17
+
+### Fixed
+
+* CI dist-zip: `package.json` を Prettier 整形 (`format:check` 失敗を解消)。Git tag `v0.1.14` は当該 commit を指すよう更新 (npm **0.1.14** は初回 publish 済み)
+
 ## 0.1.14 - 2026-11-17
 
 ### Added
