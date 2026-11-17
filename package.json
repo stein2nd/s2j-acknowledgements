@@ -22,7 +22,6 @@
   "scripts": {
     "lint:docs": "s2j-docs-linter ./README.md ./CHANGELOG.md ./docs/*.md ./docs/**/*.md ./docs_mod/*.md ./docs_mod/**/*.md  ./examples/**/*.md",
     "docs:heading-tags": "python3 scripts/apply-heading-tags.py",
-
     "lint": "eslint . && npm run typecheck",
     "lint:fix": "eslint . --fix",
     "clean": "rm -rf dist",
