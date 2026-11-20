@@ -2,6 +2,12 @@
 
 ## unreleased
 
+## 0.1.16 - 2026-11-20
+
+### Changed
+
+* devDependencies 更新 (`@s2j/docs-linter`、ESLint、Prettier、`typescript-eslint`、Vitest) と `package-lock.json` 再生成。コンパイラは **~5.8.3** 維持 (ESLint 連携の都合)。CLI 挙動の変更なし
+
 ## 0.1.15 - 2026-11-17
 
 ### Fixed
