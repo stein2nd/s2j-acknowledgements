@@ -4,7 +4,7 @@
 
 索引は [specs.md](./specs.md) です。タスク ID の正本は [implementation.md](./implementation.md) です。
 
-**npm:** `@s2j/acknowledgements` **0.1.16** (`latest`、tag `v0.1.16`)
+**npm:** `@s2j/acknowledgements` **0.1.17** (`latest`、tag `v0.1.17`)
 
 **v1到達 (2026-11-13):** `dir` 手動 E2E、npm 公開・[S2J Cozy Brew](https://github.com/stein2nd/s2j-cozy-brew) で `init` / `doctor` / `generate` / Resources 同梱 / [S2J About Window](https://github.com/stein2nd/s2j-about-window) の License、Acknowledgements 表示まで確認 ([test-results.md](./test-results.md))。
 
@@ -135,13 +135,13 @@
 * [x] P5-01: [examples/cozy-brew](../examples/cozy-brew/) `ack.config.json` (`scheme` / `productName`: **CozyBrewApp**)。[examples/dir](../examples/dir/)、[examples/wordpress-plugin](../examples/wordpress-plugin/) に `noticeProductName` 例
 * [x] P5-02: `package.json.scripts.example` (`ack:*`)
 * [x] P5-03: [examples/wordpress-plugin](../examples/wordpress-plugin/) README 付き例
-* [x] P5-04: npm 公開 ([publish.md](./publish.md)、**latest v0.1.16**)
+* [x] P5-04: npm 公開 ([publish.md](./publish.md)、**latest v0.1.17**)
 
 ### ドキュメント・リリース `{@status:s-status-docs-release}`
 
 * [x] P6-01: `docs_mod/` 確定版を `docs/` に移行
 * [x] P6-02: README クイックスタート ([README.md](../README.md))
-* [x] P6-03: CHANGELOG / Git tag **v0.1.0… v0.1.16**
+* [x] P6-03: CHANGELOG / Git tag **v0.1.0… v0.1.17**
 
 ### 品質、CI `{@status:s-ci-status-quality}`
 
@@ -150,7 +150,7 @@
 * [x] `npm run test:doctor`: ACK-001〜006
 * [x] `npm run build` / `prepare` → 配布可能 `dist/bin/cli.js`
 * [x] `npm run dist` + CI dist-zip (Lint → Test → Build & zip → artifact)
-* [x] [`.github/workflows/npm-publish.yml`](../.github/workflows/npm-publish.yml): tag `v*` で publish (0.1.4〜0.1.16)
+* [x] [`.github/workflows/npm-publish.yml`](../.github/workflows/npm-publish.yml): tag `v*` で publish (0.1.4〜0.1.17)
 * [x] Node v22 `engines` と workflow 整合 (`ubuntu-24.04`)
 
 ## v1ゲート外・任意 `{@status:s-v1-status-gates}`
@@ -163,7 +163,7 @@
 | G2 | `docs-lint` CI | 姉妹 Docs Linter 同型 (任意) |
 | G3 | Windows ターゲット解決 | v1非目標 |
 | G4 | 実ホスト (Cozy Brew / WP) で `macos-app` / `wordpress` generate | **Cozy Brew 済** — generate + About で表・長文 License 表示まで ([test-results.md](./test-results.md) 2026-11-13に UI 行)。**WordPress 実ホストは未** |
-| G5 | npm 公開の実コマンド実行 | **済** — registry `latest` **0.1.16** |
+| G5 | npm 公開の実コマンド実行 | **済** — registry `latest` **0.1.17** |
 
 ## 補足 `{@status:s-h018}`
 
@@ -188,6 +188,7 @@
 13. **0.1.14** — 済 (`docs:heading-tags`、仕様書見出しタグ)
 14. **0.1.15** — 済 (dist-zip / `package.json` Prettier、CHANGELOG)
 15. **0.1.16** — 済 (devDependencies 更新)
+16. **0.1.17** — 済 (TypeScript6 / `@typescript/native`)
 
 ## 次のアクション (推奨) `{@status:s-h020}`
 

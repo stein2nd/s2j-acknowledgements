@@ -2,6 +2,12 @@
 
 ## unreleased
 
+## 0.1.17 - 2026-11-20
+
+### Changed
+
+* devDependencies: TypeScript を **6.0** 系 (`npm:@typescript/typescript6`) へ更新。`typescript-eslint` peer 内に収めるためメインの `typescript` は7未満。ESLint 用 optional に `@typescript/native` (`npm:typescript@^7`) を追加 ([s2j-alliance-manager](https://github.com/stein2nd/s2j-alliance-manager) と同型)。`typecheck` は `tsc6` を使用
+
 ## 0.1.16 - 2026-11-20
 
 ### Changed
