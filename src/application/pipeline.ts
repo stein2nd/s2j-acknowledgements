@@ -7,11 +7,15 @@ import {
   resolveNoticeDocumentName,
   warnIfGenericNoticeDocumentName,
 } from "../domain/notice-document-name.js";
+import { readHostPackageLicense } from "../domain/host-package-license.js";
 import { prepareSpdxFile } from "../domain/spdx-anonymize.js";
 import { intermediatePathsToRemove, isOutputInsideWorkDir } from "../domain/workdir-cleanup.js";
 import { runFeludaPass } from "./feluda.js";
+import { resolveNoticeEngine } from "../domain/notice-engine.js";
+import { resolveOssNoticeExecutable } from "../lib/oss-notice-path.js";
+import { resolveOnotExecutable } from "../lib/onot-path.js";
 import { findOnotMarkdown } from "./onot-output.js";
-import { runOnotGenerate } from "./onot.js";
+import { runNoticeGenerate } from "./notice-generate.js";
 import { resolveScanTargets } from "./scan-targets.js";
 import { mergeSpdxDocuments } from "./spdx-merge.js";
 import { ensureSyftOnPath, runSyftScan } from "./syft.js";
@@ -34,7 +38,8 @@ export type PipelinePlan = {
   outputPath: string;
   syftCommands: string[];
   feluda: boolean;
-  onotCommand: string;
+  noticeCommand: string;
+  noticeEngine: "onot" | "oss-notice";
 };
 
 export function planPipeline(
@@ -54,7 +59,17 @@ export function planPipeline(
 
   const venvPath = config.tools?.venvPath ?? "venv";
   const onotConfig = config.pipeline?.onotConfig ?? "onot.yaml";
-  const onotExe = join(hostRoot, venvPath, "bin", "onot");
+  const engine = resolveNoticeEngine(config.pipeline);
+
+  let noticeExe: string;
+  if (engine === "oss-notice") {
+    const resolvedExe = resolveOssNoticeExecutable(hostRoot, config.tools?.ossNoticePath);
+    noticeExe = resolvedExe?.path ?? "s2j-oss-notice";
+  } else {
+    const onotExe = join(hostRoot, venvPath, "bin", "onot");
+    const resolvedOnot = resolveOnotExecutable(hostRoot, venvPath, config.tools?.onotPath);
+    noticeExe = resolvedOnot?.path ?? (existsSync(onotExe) ? onotExe : "onot");
+  }
 
   return {
     targets: resolved.targets,
@@ -64,7 +79,8 @@ export function planPipeline(
     outputPath,
     syftCommands: resolved.targets.map((t) => `syft scan dir:${t.absolutePath} -o spdx-json=…`),
     feluda: config.pipeline?.feluda === true,
-    onotCommand: `${existsSync(onotExe) ? onotExe : "onot"} generate -i ${sbomPath} -f md -o ${onotOutputDir} --config ${onotConfig}`,
+    noticeEngine: engine,
+    noticeCommand: `${noticeExe} generate -i ${sbomPath} -f md -o ${onotOutputDir} --config ${onotConfig}`,
   };
 }
 
@@ -92,8 +108,8 @@ export function runPipeline(options: PipelineOptions): number {
     console.log("dry-run: merged SBOM →", plan.sbomPath);
     console.log("dry-run: SPDX document name →", noticeName.documentName);
     console.log("dry-run: feluda", options.skipFeluda ? "skipped (--skip-feluda)" : plan.feluda);
-    console.log("dry-run: onot →", plan.onotCommand);
-    console.log("dry-run: copy onot output dir →", plan.outputPath);
+    console.log(`dry-run: notice engine (${plan.noticeEngine}) →`, plan.noticeCommand);
+    console.log("dry-run: copy notice output dir →", plan.outputPath);
     return 0;
   }
 
@@ -127,17 +143,38 @@ export function runPipeline(options: PipelineOptions): number {
   mergeSpdxDocuments(partialSboms, plan.sbomPath);
   const noticeDenylist = options.config.pipeline?.noticeDenylist ?? [];
   const documentName = noticeName.isGeneric ? undefined : noticeName.documentName;
+  const pipeline = options.config.pipeline;
+  const applyHostLicense = pipeline?.applyHostPackageLicense !== false;
+  let hostLicenseId = pipeline?.hostPackageLicense?.trim();
+  if (applyHostLicense && !hostLicenseId) {
+    const pkgRel = pipeline?.hostPackageJson?.trim() || "package.json";
+    hostLicenseId = readHostPackageLicense(options.hostRoot, pkgRel);
+  }
+  const hostPackageLicense =
+    documentName && hostLicenseId
+      ? { packageName: documentName, licenseId: hostLicenseId }
+      : undefined;
+  if (applyHostLicense && hostLicenseId && !documentName) {
+    console.warn(
+      "warn: host package license found but notice product name is unset (host-sbom); skipping Components license patch",
+    );
+  }
+  if (applyHostLicense && documentName && !hostLicenseId) {
+    const pkgRel = pipeline?.hostPackageJson?.trim() || "package.json";
+    console.warn(`warn: no license in ${pkgRel} for host package ${documentName}`);
+  }
+
   const spdxPrep = prepareSpdxFile(
     plan.sbomPath,
     {
       hostRoot: options.hostRoot,
       targets: plan.targets,
     },
-    { noticeDenylist, documentName },
+    { noticeDenylist, documentName, hostPackageLicense },
   );
   if (options.verbose) {
     console.error(
-      `verbose: SPDX prepared (${plan.sbomPath}, dropped ${spdxPrep.droppedPathPackages} path-like, ${spdxPrep.droppedNoticePackages} notice-denylist)`,
+      `verbose: SPDX prepared (${plan.sbomPath}, dropped ${spdxPrep.droppedPathPackages} path-like, ${spdxPrep.droppedNoticePackages} notice-denylist, host license patched ${spdxPrep.hostLicensePackagesPatched} package(s))`,
     );
   } else {
     if (spdxPrep.droppedPathPackages > 0) {
@@ -148,6 +185,15 @@ export function runPipeline(options: PipelineOptions): number {
     if (spdxPrep.droppedNoticePackages > 0) {
       console.error(
         `info: dropped ${spdxPrep.droppedNoticePackages} notice-denylist SPDX package(s) before onot`,
+      );
+    }
+    if (spdxPrep.hostLicensePackagesPatched > 0) {
+      console.error(
+        `info: set licenseDeclared on ${spdxPrep.hostLicensePackagesPatched} host package row(s) from package.json`,
+      );
+    } else if (hostPackageLicense) {
+      console.warn(
+        `warn: host license ${hostLicenseId} was not applied (no SPDX package named ${documentName})`,
       );
     }
   }
@@ -163,17 +209,19 @@ export function runPipeline(options: PipelineOptions): number {
     }
   }
 
-  const onot = runOnotGenerate({
+  const notice = runNoticeGenerate({
+    engine: resolveNoticeEngine(options.config.pipeline),
     hostRoot: options.hostRoot,
     venvPath: options.config.tools?.venvPath ?? "venv",
     onotPath: options.config.tools?.onotPath,
+    ossNoticePath: options.config.tools?.ossNoticePath,
     sbomPath: plan.sbomPath,
     onotConfigRel: options.config.pipeline?.onotConfig,
     outputDir: plan.onotOutputDir,
     verbose: options.verbose,
   });
-  if (!onot.ok) {
-    return onot.exitCode === 127 ? 127 : 1;
+  if (!notice.ok) {
+    return notice.exitCode === 127 ? 127 : 1;
   }
 
   const noticeFile = findOnotMarkdown(plan.onotOutputDir);

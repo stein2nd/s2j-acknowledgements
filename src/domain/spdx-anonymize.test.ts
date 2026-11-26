@@ -85,6 +85,31 @@ describe("spdx-anonymize", () => {
     expect(doc.name).toBe("CozyBrewApp");
   });
 
+  it("prepareSpdxFile applies host package license to product row", () => {
+    const hostRoot = mkdtempSync(join(tmpdir(), "spdx-host-lic-"));
+    const path = join(hostRoot, "sbom.spdx.json");
+    writeFileSync(
+      path,
+      `${JSON.stringify({
+        name: "merged-sbom",
+        packages: [{ name: "CozyBrewApp", versionInfo: "1.0.0", licenseDeclared: "NOASSERTION" }],
+      })}\n`,
+    );
+    const result = prepareSpdxFile(
+      path,
+      { hostRoot, targets: [] },
+      {
+        documentName: "CozyBrewApp",
+        hostPackageLicense: { packageName: "CozyBrewApp", licenseId: "GPL-3.0-or-later" },
+      },
+    );
+    expect(result.hostLicensePackagesPatched).toBe(1);
+    const doc = JSON.parse(readFileSync(path, "utf8")) as {
+      packages: { licenseDeclared: string }[];
+    };
+    expect(doc.packages[0].licenseDeclared).toBe("GPL-3.0-or-later");
+  });
+
   it("prepareSpdxFile keeps host-sbom without documentName", () => {
     const hostRoot = mkdtempSync(join(tmpdir(), "spdx-doc-"));
     const path = join(hostRoot, "sbom.spdx.json");

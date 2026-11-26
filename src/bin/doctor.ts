@@ -10,6 +10,8 @@ import {
 } from "../domain/gitignore.js";
 import { isPresetName } from "../domain/presets.js";
 import { flagString, parseArgs } from "../lib/args.js";
+import { resolveNoticeEngine } from "../domain/notice-engine.js";
+import { resolveOssNoticeExecutable } from "../lib/oss-notice-path.js";
 import { resolveOnotExecutable, resolveHostRoot } from "../lib/onot-path.js";
 import { loadRecommendedTools } from "../lib/recommended-tools.js";
 import type { AckConfig } from "../domain/ack-config.js";
@@ -68,17 +70,37 @@ export function runDoctor(argv: string[]): number {
     rows.push({ name: "ack.config.json", status: "WARN", detail: `not found: ${configPath}` });
   }
 
-  const onot = resolveOnotExecutable(hostRoot, venvPath);
-  if (onot) {
-    const ver = runCommand(onot.path, ["--version"]);
-    rows.push({
-      name: "onot",
-      status: ver.ok ? "OK" : "WARN",
-      detail: `${onot.source}: ${onot.path}`,
-    });
+  const noticeEngine = resolveNoticeEngine(ackConfig?.pipeline);
+  if (noticeEngine === "oss-notice") {
+    const ossNotice = resolveOssNoticeExecutable(hostRoot, ackConfig?.tools?.ossNoticePath);
+    if (ossNotice) {
+      const ver = runCommand(ossNotice.path, ["--version"]);
+      rows.push({
+        name: "s2j-oss-notice",
+        status: ver.ok ? "OK" : "WARN",
+        detail: `${ossNotice.source}: ${ossNotice.path}`,
+      });
+    } else {
+      rows.push({
+        name: "s2j-oss-notice",
+        status: "MISSING",
+        detail: "npm i -D @s2j/oss-notice",
+      });
+      hasMissing = true;
+    }
   } else {
-    rows.push({ name: "onot", status: "MISSING", detail: "run init --preset …" });
-    hasMissing = true;
+    const onot = resolveOnotExecutable(hostRoot, venvPath, ackConfig?.tools?.onotPath);
+    if (onot) {
+      const ver = runCommand(onot.path, ["--version"]);
+      rows.push({
+        name: "onot",
+        status: ver.ok ? "OK" : "WARN",
+        detail: `${onot.source}: ${onot.path}`,
+      });
+    } else {
+      rows.push({ name: "onot", status: "MISSING", detail: "run init --preset …" });
+      hasMissing = true;
+    }
   }
 
   const py = whichPython();
@@ -140,6 +162,9 @@ export function runDoctor(argv: string[]): number {
     `\nRecommended pins: syft ${recommended.syft ?? "?"}, onot ${recommended.onot ?? "?"}`,
   );
   console.log("See docs/install.md for setup.");
+  console.log(
+    "Standalone Notice engine (bundled catalog, optional -i): npx @s2j/oss-notice doctor",
+  );
 
   return hasMissing ? 1 : 0;
 }

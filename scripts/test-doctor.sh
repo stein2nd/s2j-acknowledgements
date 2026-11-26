@@ -62,5 +62,14 @@ assert_exit_code "${STATUS}" 0
 assert_contains "${OUTPUT}" "dry-run"
 pass_test "ACK-006"
 
+log_test "ACK-007"
+run_cli doctor --cwd "${SANDBOX}"
+if [[ "${STATUS}" -ne 0 && "${STATUS}" -ne 1 ]]; then
+  echo "FAIL: expected exit 0 or 1, got ${STATUS}"
+  exit 1
+fi
+assert_contains "${OUTPUT}" "@s2j/oss-notice doctor"
+pass_test "ACK-007"
+
 echo ""
 echo "All ACK tests passed."

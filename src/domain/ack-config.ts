@@ -2,9 +2,12 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { mergeHostConfig } from "./config-merge.js";
+import type { NoticeEngine } from "./notice-engine.js";
 import { isPresetName } from "./presets.js";
 
 export type PipelineConfig = {
+  /** Notice generator: Python onot (default) or `@s2j/oss-notice` (ADR-001). */
+  engine?: NoticeEngine;
   feluda?: boolean;
   /** Extra feluda argv; `{sbom}` is replaced with the merged SBOM path. */
   feludaArgs?: string[];
@@ -12,6 +15,15 @@ export type PipelineConfig = {
   noticeProductName?: string;
   /** SPDX `packages[].name` globs omitted from user-facing notices (not shipped OSS). */
   noticeDenylist?: string[];
+  /**
+   * When true (default), read `hostPackageJson` and set SPDX `licenseDeclared` on the
+   * product package row (`noticeProductName` / `xcode.productName`) before Feluda / onot.
+   */
+  applyHostPackageLicense?: boolean;
+  /** Host path to read `license` from. Default `package.json`. */
+  hostPackageJson?: string;
+  /** Explicit SPDX id; overrides `hostPackageJson` when set. */
+  hostPackageLicense?: string;
   onotFormat?: string;
   onotConfig?: string;
 };
@@ -32,6 +44,7 @@ export type XcodeConfig = {
 export type ToolsConfig = {
   venvPath?: string;
   onotPath?: string;
+  ossNoticePath?: string;
 };
 
 export type AckConfig = {

@@ -52,6 +52,9 @@ v1では JSON Schema ファイル (`schema/ack.config.schema.json`) の同梱を
 | `pipeline.feludaArgs` | string[] | いいえ | Feluda 引数。`{sbom}` はマージ後 SBOM パス。未指定時は `--sbom-input` / `--sbom-enriched` |
 | `pipeline.noticeProductName` | string | いいえ | 全プリセット共通の製品名 (SPDX `name` / onot 見出し `OSS Notice for …`)。**最優先**。未設定かつ macOS 以外は `host-sbom` になり `doctor` / `generate` が WARN |
 | `pipeline.noticeDenylist` | string[] | いいえ | Notice から省く SPDX `packages[].name` glob (`actions/*` 等)。[pipeline.md](./pipeline.md) |
+| `pipeline.applyHostPackageLicense` | boolean | いいえ | デフォルト `true`。`false` でホスト `package.json` → SPDX ホスト行の License 補完を無効化 |
+| `pipeline.hostPackageJson` | string | いいえ | デフォルト `package.json`。ホストルート相対。`license` フィールドを SPDX に反映 |
+| `pipeline.hostPackageLicense` | string | いいえ | 明示 SPDX ID。設定時は `hostPackageJson` を読まない |
 | `pipeline.onotFormat` | string | いいえ | v1は `md` のみ |
 | `pipeline.onotConfig` | string | いいえ | onot 設定 YAML へのパス |
 | `syft` | object | いいえ | Syft 追加引数 (上級者向け) |

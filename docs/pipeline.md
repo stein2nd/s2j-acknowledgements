@@ -3,7 +3,7 @@
 Syft / Feluda / onot を直列に実行するオーケストレーション仕様です。
 本 npm パッケージは **各ツールのラッパー** であり、ロジックの本体は上流 CLI に委譲します。
 
-**Syft フラグ・マージ・成果物コピーの正本は本ファイル**です ([specs.md](./specs.md) の正本マトリックス)。
+**Syft フラグ・マージ・成果物コピーの正本は本ファイル** です ([specs.md](./specs.md) の正本マトリックス)。
 
 ## 全体フロー `{@pipeline:s-h001}`
 
@@ -62,6 +62,7 @@ syft scan dir:{path} -o spdx-json={out} --exclude {pattern} ...
    * **ドキュメント名** (`merged-sbom` 置換、onot 見出し `OSS Notice for …`): (1) `pipeline.noticeProductName`、(2) `xcode.productName` (`.app` 除去)、(3) 未設定時 `host-sbom` — `doctor` / `generate` で WARN (配布向けには (1) または (2) を推奨)
    * **除去**: `packages[].name` がパス型 (先頭 `/`、`{SCAN:…}` / `{HOME}` 等) の行を削除。コンポーネント名 (`s2j-about-window` 等) は残す
    * **Notice denylist**: `pipeline.noticeDenylist[]` の glob に一致する `name` を削除 (CI Action 等、配布物に含めないコンポーネント)。`macos-app` デフォルト: `actions/*` / `codecov/*` / `maxim-lobanov/*`
+   * **ホスト License** (デフォルト ON): Syft の `.app` 行は `licenseDeclared` が空になりやすい。`pipeline.applyHostPackageLicense` が `true` のとき、`pipeline.hostPackageJson` (デフォルト `package.json`) の `license`、または `pipeline.hostPackageLicense` 明示値を、製品名と同じ `packages[].name` (`noticeProductName` / `xcode.productName`) に Feluda / onot の前に反映
 
 `composer.lock` のみを Syft 入力にする運用は **v1非対象** (将来 v1.1)。v1では `vendor/` ディレクトリスキャンを使います。
 
@@ -104,6 +105,32 @@ feluda --sbom-input {workDir}/sbom.spdx.json --sbom-enriched {workDir}/sbom.spdx
 ```
 
 `ack.config.json` の `pipeline.feludaArgs` で置き換え可。`{sbom}` は上記 JSON パスに展開されます。
+
+## Notice エンジン `{@pipeline:s-engine}`
+
+| `pipeline.engine` | 実行体 | 正本 |
+| --- | --- | --- |
+| `onot` (デフォルト) | Python `onot` | 下記 § onot |
+| `oss-notice` | `s2j-oss-notice` (Node) | [@s2j/oss-notice ADR-001](https://github.com/stein2nd/s2j-oss-notice/blob/main/docs/decisions/001-pipeline-engine.md) |
+
+`builtin` は採用しません。移行期はホストが `engine` を明示します。S2J 最終形は **`oss-notice`** をデフォルトとする想定です。
+
+```json
+{
+  "pipeline": {
+    "engine": "oss-notice",
+    "onotConfig": "onot.yaml"
+  }
+}
+```
+
+解決順序 (`oss-notice`):
+
+1. `tools.ossNoticePath`
+2. `{host}/node_modules/.bin/s2j-oss-notice`
+3. `PATH` 上の `s2j-oss-notice`
+
+argv は onot と同型です (下記コマンド形)。
 
 ## onot `{@pipeline:s-onot}`
 
@@ -149,7 +176,12 @@ CLI は生成前に `workDir` を作成し、終了時に `--keep-intermediate` 
 | 出力先が既存ファイル | デフォルトは **オーバーライト** (生成物の性質上)。`--dry-run` 時は書かない |
 | ターゲット未解決 (`.app` 等) | 人間可読な解決手順を stderr に出し、exit `2` |
 
-## 将来: onot サブセット実装 `{@pipeline:s-onot-2}`
+## `@s2j/oss-notice` (`engine: "oss-notice"`) `{@pipeline:s-oss-notice}`
 
-ネック対策として、中期では **SPDX JSON → Markdown** の最小 TS 実装を別モジュール化する余地があります。
-v1仕様では **onot 必須** とし、フラグ `pipeline.engine: "onot" | "builtin"` は将来拡張用に予約のみ記載しません (YAGNI)。
+[@s2j/oss-notice](https://github.com/stein2nd/s2j-oss-notice) は onot 互換の `generate` argv を提供します。入力・出力・`onot.yaml` は onot 節と同じです。
+
+```text
+s2j-oss-notice generate -i {workDir}/sbom.spdx.json -f md --config {onotConfigPath} -o {workDir}/onot-notice
+```
+
+ホストは `npm i -D @s2j/oss-notice` し、`doctor` でバイナリを確認します (Python venv は不要)。

@@ -58,6 +58,26 @@
           "type": "array",
           "items": { "type": "string", "minLength": 1 }
         },
+        "applyHostPackageLicense": {
+          "type": "boolean",
+          "default": true,
+          "description": "Read hostPackageJson and set SPDX licenseDeclared on the product package row before Feluda/onot."
+        },
+        "hostPackageJson": {
+          "type": "string",
+          "minLength": 1,
+          "default": "package.json",
+          "description": "Host-relative path to read license (npm package.json field)."
+        },
+        "hostPackageLicense": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Explicit SPDX license id for the host product row; overrides hostPackageJson."
+        },
+        "engine": {
+          "type": "string",
+          "enum": ["onot", "oss-notice"]
+        },
         "onotFormat": { "type": "string", "const": "md" },
         "onotConfig": { "type": "string" }
       }
@@ -77,7 +97,8 @@
       "additionalProperties": false,
       "properties": {
         "venvPath": { "type": "string", "default": "venv" },
-        "onotPath": { "type": "string" }
+        "onotPath": { "type": "string" },
+        "ossNoticePath": { "type": "string" }
       }
     }
   }

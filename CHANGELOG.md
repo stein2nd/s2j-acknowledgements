@@ -2,6 +2,22 @@
 
 ## unreleased
 
+## 0.1.18 - 2026-11-26
+
+### Added
+
+* **pipeline**: ホスト `package.json` の `license` を SPDX 製品行 (`noticeProductName` / `xcode.productName` と同名の `packages[].name`) の `licenseDeclared` に反映 (`applyHostPackageLicense` デフォルト `true`、`hostPackageJson` / `hostPackageLicense`)。macOS `.app` Syft スキャンで Components 表の License 列が空になる問題の対策 ([pipeline.md](./docs/pipeline.md))
+* **pipeline.engine**: `onot` (デフォルト) | `oss-notice`。後者は `@s2j/oss-notice` を実行 (`tools.ossNoticePath` 任意)
+* **`test:doctor` ACK-007**: サンドボックス `doctor` が `@s2j/oss-notice doctor` を案内すること
+
+### Changed
+
+* **`doctor` / `generate`**: Notice エンジンに応じて onot または `s2j-oss-notice` を解決・実行。`dry-run` ログは engine 名付き
+* **`doctor`**: `tools.onotPath` を尊重。推奨インストール案内を stdout 末尾に統一
+* **README**: [S2J About Window](https://github.com/stein2nd/s2j-about-window) / [S2J Source List](https://github.com/stein2nd/s2j-source-list) と同型の見出し・章立て
+* **docs / schema**: `pipeline.engine`、ホスト License フィールド、`cli.md` ACK-007
+* devDependencies 更新 (`@s2j/docs-linter`、`typescript-eslint`、Vite、Vitest)
+
 ## 0.1.17 - 2026-11-20
 
 ### Changed

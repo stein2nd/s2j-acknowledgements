@@ -138,7 +138,7 @@ CI や手元で **何度でも安全に再実行** できることを v1の前�
 
 ### 出力 `{@cli:s-h015}`
 
-推奨インストール手順は [install.md](./install.md) への参照を stderr または stdout 末尾に1行載せます。
+推奨インストール手順は [install.md](./install.md) への参照を stdout 末尾に載せます。パイプライン外の Notice 単体診断は **`npx @s2j/oss-notice doctor`** (G5、[@s2j/oss-notice ADR-004](https://github.com/stein2nd/s2j-oss-notice/blob/main/docs/decisions/004-doctor-and-init-scope.md))。
 
 * 成功時: stdout に表形式または箇条書きで OK / WARN / MISSING
 * 終了コード: 必須ツール欠落時は `1`、警告のみは `0`
@@ -193,7 +193,7 @@ CI や手元で **何度でも安全に再実行** できることを v1の前�
 | `2` | ユーザー入力・設定・ターゲット解決エラー |
 | `127` | 実行ファイル未検出 (内部判定) |
 
-### スモークテスト (ACK-001〜006) `{@cli:s-ack-001}`
+### スモークテスト (ACK-001〜007) `{@cli:s-ack-001}`
 
 CI の `npm run test:doctor` (`scripts/test-doctor.sh`) が再現する最小契約です。
 
@@ -205,6 +205,7 @@ CI の `npm run test:doctor` (`scripts/test-doctor.sh`) が再現する最小契
 | ACK-004 | `not-a-command` | `2` | (任意) |
 | ACK-005 | `generate` + 不正設定 (`--cwd` サンドボックス) | `2` | `validation failed` |
 | ACK-006 | `generate --dry-run` (有効な `ack.config.json`) | `0` | `dry-run` |
+| ACK-007 | `doctor --cwd` (サンドボックス) | `0` または `1` | `@s2j/oss-notice doctor` |
 
 ## ログ `{@cli:s-h023}`
 

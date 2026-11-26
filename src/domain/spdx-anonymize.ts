@@ -2,6 +2,8 @@ import { homedir } from "node:os";
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
+import { applyHostPackageLicenseToSpdx } from "./host-package-license.js";
+
 export type SpdxAnonymizeContext = {
   hostRoot: string;
   targets: { label: string; absolutePath: string }[];
@@ -123,9 +125,15 @@ export function pruneNoticeDenylistPackages(
   return before - (doc.packages as unknown[]).length;
 }
 
+export type HostPackageLicenseSpdx = {
+  packageName: string;
+  licenseId: string;
+};
+
 export type PrepareSpdxResult = {
   droppedPathPackages: number;
   droppedNoticePackages: number;
+  hostLicensePackagesPatched: number;
 };
 
 /** Internal SPDX document name when no product name is configured (onot: OSS Notice for host-sbom). */
@@ -135,6 +143,8 @@ export type PrepareSpdxOptions = {
   noticeDenylist?: string[];
   /** SPDX `name` after merge; onot uses this for the Notice title (e.g. OSS Notice for …). */
   documentName?: string;
+  /** Host app row in Components (SPDX `packages[].name` === `documentName`). */
+  hostPackageLicense?: HostPackageLicenseSpdx;
 };
 
 /** `xcode.productName` → SPDX document name (strip `.app` if present). */
@@ -162,6 +172,12 @@ export function prepareSpdxFile(
   const droppedPathPackages = prunePathLikePackages(anon);
   const noticeDenylist = options.noticeDenylist ?? [];
   const droppedNoticePackages = pruneNoticeDenylistPackages(anon, noticeDenylist);
+
+  let hostLicensePackagesPatched = 0;
+  if (options.hostPackageLicense) {
+    hostLicensePackagesPatched = applyHostPackageLicenseToSpdx(anon, options.hostPackageLicense);
+  }
+
   writeFileSync(filePath, `${JSON.stringify(anon, null, 2)}\n`, "utf8");
-  return { droppedPathPackages, droppedNoticePackages };
+  return { droppedPathPackages, droppedNoticePackages, hostLicensePackagesPatched };
 }

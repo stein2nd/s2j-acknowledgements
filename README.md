@@ -1,6 +1,6 @@
 # S2J Acknowledgements
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-22+-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
@@ -246,11 +246,6 @@ Original: [docs/cli.md](docs/cli.md).
 * `docs/` — 仕様 Markdown
 
 ### Setting Up Development Environment
-
-<!-- 
-1. Clone the repository
-2. Install dependencies and run the quality gate
- -->
 
 <!-- 
 1. Clone the repository.
